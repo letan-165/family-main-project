@@ -1,13 +1,9 @@
 package family.main.project.internal.user.entity;
 
-
 import family.main.project.common.enums.UserLoginType;
 import family.main.project.common.enums.UserRole;
 import family.main.project.common.enums.UserStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
@@ -26,7 +22,13 @@ public class User {
     String username;
     String password;
     String email;
+
+    @Enumerated(EnumType.STRING)
     UserLoginType loginType;
+
+    @Enumerated(EnumType.STRING)
     UserStatus status;
+
+    @Enumerated(EnumType.STRING)
     UserRole role;
 }

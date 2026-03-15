@@ -4,7 +4,24 @@ server:
     context-path: /api
 
 spring:
-  data:
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/main-bunnuoccole}
+    username: ${POSTGRES_USERNAME:root}
+    password: ${POSTGRES_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  cache:
+    type: redis
+  redis:
+    url: ${REDIS_URL:redis://localhost:6379}
+
+  rabbitmq:
+    addresses: ${RABBIT_MQ_URL:amqp://guest:guest@localhost:5672}
 
 app:
   time:

@@ -1,0 +1,30 @@
+package family.main.project.internal.order.entity;
+
+import family.main.project.common.enums.ItemStatus;
+import family.main.project.common.enums.ItemType;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Entity
+@Table(name = "items")
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Item {
+    @Id
+    Long id;
+    String name;
+
+    @Enumerated(EnumType.STRING)
+    ItemStatus status;
+
+    @Enumerated(EnumType.STRING)
+    ItemType type;
+
+    Integer price;
+    String picture;
+    String description;
+}
