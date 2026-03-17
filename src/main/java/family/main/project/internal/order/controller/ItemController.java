@@ -20,7 +20,7 @@ import java.util.List;
 public class ItemController {
     ItemService itemService;
 
-    @GetMapping("/public}")
+    @GetMapping("/public")
     ApiResponse<List<Item>> getItems(){
         return ApiResponse.<List<Item>>builder()
                 .message("get items")

@@ -27,7 +27,7 @@ public class OrderController {
                 .build();
     }
 
-    @PutMapping("/public/{id}")
+    @PutMapping("/public/{id}/status")
     ApiResponse<Order> updateStatus(@PathVariable Long id,@RequestBody OrderUpdateStatusRequest request){
         return ApiResponse.<Order>builder()
                 .message("update status order")

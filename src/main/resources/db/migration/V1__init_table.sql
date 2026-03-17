@@ -20,7 +20,7 @@ CREATE TABLE user_profile (
 );
 
 CREATE TABLE items (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     type VARCHAR(20) NOT NULL,
     status VARCHAR(20) NOT NULL,
@@ -31,16 +31,16 @@ CREATE TABLE items (
 );
 
 CREATE TABLE orders (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    time_booking DATETIME NOT NULL,
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    time_booking TIMESTAMP NOT NULL,
     status VARCHAR(20) NOT NULL,
-    time_completed DATETIME,
+    time_completed TIMESTAMP,
     total INT NOT NULL,
     note VARCHAR(255)
 );
 
 CREATE TABLE customer_order (
-    id VARCHAR(36) PRIMARY KEY,
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
     order_id BIGINT NOT NULL UNIQUE,
     receiver VARCHAR(50) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE customer_order (
 );
 
 CREATE TABLE item_order (
-    id VARCHAR(36) PRIMARY KEY,
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     item_id BIGINT NOT NULL,
     order_id BIGINT NOT NULL,
     quantity INT NOT NULL,

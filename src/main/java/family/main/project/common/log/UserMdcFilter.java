@@ -1,5 +1,6 @@
 package family.main.project.common.log;
 
+import family.main.project.internal.user.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class UserMdcFilter extends OncePerRequestFilter {
         try {
             String auth = request.getHeader("Authorization");
             if (auth != null && auth.startsWith("Bearer ")) {
-                String username = authService.userInfo().getPreferred_username();
+                String username = authService.getUserIdFromToken();
                 MDC.put("username", username);
             }
             filterChain.doFilter(request, response);

@@ -61,7 +61,7 @@ public class OrderService {
 
         UserOrder userOrder = UserOrder.builder()
                 .userId(request.getUserId())
-                .orderId(order.getId().toString())
+                .orderId(order.getId())
                 .receiverName(request.getReceiverName())
                 .phone(request.getPhone())
                 .address(request.getAddress())

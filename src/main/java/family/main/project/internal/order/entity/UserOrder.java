@@ -20,7 +20,7 @@ public class UserOrder {
     String userId;
 
     @Column(name = "order_id")
-    String orderId;
+    Long orderId;
 
     @Column(name = "receiver_name")
     String receiverName;
