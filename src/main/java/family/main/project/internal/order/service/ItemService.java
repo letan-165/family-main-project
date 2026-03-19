@@ -13,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,7 @@ public class ItemService {
     }
 
     public void delete(Long id) {
-        if (itemRepository.existsById(id))
+        if (!itemRepository.existsById(id))
             throw new AppException(ErrorCode.ITEM_NO_EXISTS);
 
         itemRepository.deleteById(id);

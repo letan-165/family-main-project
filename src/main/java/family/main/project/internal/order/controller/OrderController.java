@@ -5,6 +5,7 @@ import family.main.project.internal.order.dto.request.OrderCreateRequest;
 import family.main.project.internal.order.dto.request.OrderUpdateStatusRequest;
 import family.main.project.internal.order.entity.Order;
 import family.main.project.internal.order.service.OrderService;
+import family.main.project.internal.user.service.AuthService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,9 +22,11 @@ public class OrderController {
 
     @PostMapping("/public")
     ApiResponse<Long> createOrder(@RequestBody OrderCreateRequest request){
+        String userId = AuthService.getUserIdFromToken();
+
         return ApiResponse.<Long>builder()
                 .message("create order")
-                .result(orderService.createOrder(request))
+                .result(orderService.createOrder(userId ,request))
                 .build();
     }
 

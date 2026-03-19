@@ -15,7 +15,10 @@ public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
+
+    @Column(name = "user_id")
     String userId;
+
     String fullName;
     String phone;
     String avatar;

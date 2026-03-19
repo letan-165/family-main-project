@@ -39,11 +39,11 @@ CREATE TABLE orders (
     note VARCHAR(255)
 );
 
-CREATE TABLE customer_order (
+CREATE TABLE user_order (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
     order_id BIGINT NOT NULL UNIQUE,
-    receiver VARCHAR(50) NOT NULL,
+    receiver_name VARCHAR(50) NOT NULL,
     phone VARCHAR(10) NOT NULL,
     address VARCHAR(255) NOT NULL,
 
@@ -56,7 +56,7 @@ CREATE TABLE item_order (
     item_id BIGINT NOT NULL,
     order_id BIGINT NOT NULL,
     quantity INT NOT NULL,
-    price INT NOT NULL,
+    total INT NOT NULL,
 
     UNIQUE(item_id, order_id),
 

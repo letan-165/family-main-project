@@ -5,7 +5,6 @@ import java.util.List;
 
 @Data
 public class OrderCreateRequest {
-    String userId;
     String receiverName;
     String phone;
     String address;

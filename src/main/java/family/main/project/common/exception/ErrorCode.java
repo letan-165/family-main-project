@@ -30,7 +30,7 @@ public enum ErrorCode {
     ENUM_INVALID(3001, "Enum invalid", HttpStatus.BAD_REQUEST),
     USER_ROLE_INVALID(3002, "User role invalid (CUSTOMER, ADMIN)", HttpStatus.BAD_REQUEST),
     USER_STATUS_INVALID(3003, "User status invalid (ACTIVE, BANNED)", HttpStatus.BAD_REQUEST),
-    USER_LOGIN_TYPE_INVALID(3004, "User login type invalid (GOOGLE, APP)", HttpStatus.BAD_REQUEST),
+    USER_TYPE_LOGIN_INVALID(3004, "User type login invalid (GOOGLE, APP)", HttpStatus.BAD_REQUEST),
     ITEM_STATUS_INVALID(3005, "Item status invalid (ACTIVE, OUT, PAUSED)", HttpStatus.BAD_REQUEST),
     ITEM_TYPE_INVALID(3006, "Item type invalid (MAIN, SIDE, DRINK)", HttpStatus.BAD_REQUEST),
     ORDER_STATUS_INVALID(3007, "Order status invalid ( PENDING, CANCELLED, CONFIRMED, COMPLETED)", HttpStatus.BAD_REQUEST),

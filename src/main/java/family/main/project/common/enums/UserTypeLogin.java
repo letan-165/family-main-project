@@ -1,5 +1,5 @@
 package family.main.project.common.enums;
 
-public enum UserLoginType {
+public enum UserTypeLogin {
     GOOGLE, APP
 }

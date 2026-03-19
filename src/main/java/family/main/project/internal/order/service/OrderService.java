@@ -26,7 +26,7 @@ public class OrderService {
     UserOrderRepository userOrderRepository;
 
     @Transactional
-    public Long createOrder(OrderCreateRequest request) {
+    public Long createOrder(String userId, OrderCreateRequest request) {
         Order order = Order.builder()
                 .status(OrderStatus.PENDING)
                 .note(request.getNote())
@@ -60,7 +60,7 @@ public class OrderService {
         orderRepository.save(order);
 
         UserOrder userOrder = UserOrder.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .orderId(order.getId())
                 .receiverName(request.getReceiverName())
                 .phone(request.getPhone())

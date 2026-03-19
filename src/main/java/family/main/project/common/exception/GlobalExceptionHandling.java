@@ -51,8 +51,8 @@ public class GlobalExceptionHandling {
 
                 return switch (enumName) {
                     case "UserRole" -> toResponseEntity(ErrorCode.USER_ROLE_INVALID);
-                    case "UserStatus" -> toResponseEntity(ErrorCode.USER_LOGIN_TYPE_INVALID);
-                    case "UserLoginType" -> toResponseEntity(ErrorCode.USER_LOGIN_TYPE_INVALID);
+                    case "UserStatus" -> toResponseEntity(ErrorCode.USER_STATUS_INVALID);
+                    case "UserLoginType" -> toResponseEntity(ErrorCode.USER_TYPE_LOGIN_INVALID);
                     case "ItemStatus" -> toResponseEntity(ErrorCode.ITEM_STATUS_INVALID);
                     case "ItemType" -> toResponseEntity(ErrorCode.ITEM_TYPE_INVALID);
                     case "OrderStatus" -> toResponseEntity(ErrorCode.ORDER_STATUS_INVALID);

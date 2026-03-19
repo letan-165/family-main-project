@@ -1,6 +1,6 @@
 package family.main.project.internal.user.entity;
 
-import family.main.project.common.enums.UserLoginType;
+import family.main.project.common.enums.UserTypeLogin;
 import family.main.project.common.enums.UserRole;
 import family.main.project.common.enums.UserStatus;
 import jakarta.persistence.*;
@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "users")
-@Builder
+@Builder(toBuilder = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,8 +22,9 @@ public class User {
     String password;
     String email;
 
+    @Column(name = "type_login")
     @Enumerated(EnumType.STRING)
-    UserLoginType loginType;
+    UserTypeLogin typeLogin;
 
     @Enumerated(EnumType.STRING)
     UserStatus status;

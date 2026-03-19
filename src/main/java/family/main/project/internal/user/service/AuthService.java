@@ -5,6 +5,9 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import family.main.project.common.enums.UserTypeLogin;
+import family.main.project.common.enums.UserRole;
+import family.main.project.common.enums.UserStatus;
 import family.main.project.common.exception.AppException;
 import family.main.project.common.exception.ErrorCode;
 import family.main.project.internal.user.dto.request.LoginRequest;
@@ -13,6 +16,8 @@ import family.main.project.internal.user.dto.request.UserSignUpRequest;
 import family.main.project.internal.user.dto.response.AuthResponse;
 import family.main.project.internal.user.entity.UserProfile;
 import family.main.project.internal.user.entity.User;
+import family.main.project.internal.user.mapper.ProfileMapper;
+import family.main.project.internal.user.mapper.UserMapper;
 import family.main.project.internal.user.repository.ProfileRepository;
 import family.main.project.internal.user.repository.UserRepository;
 import lombok.AccessLevel;
@@ -51,19 +56,29 @@ public class AuthService {
     ProfileRepository profileRepository;
     PasswordEncoder passwordEncoder;
 
+    UserMapper userMapper;
+    ProfileMapper profileMapper;
 
     public AuthResponse signUp(UserSignUpRequest request) {
         if(userRepository.existsByUsername(request.getUsername()))
             throw new AppException(ErrorCode.USER_EXISTS);
 
-        User user = User.builder()
+        User user = userMapper.toUser(request);
+        user = user.toBuilder()
                 .password(passwordEncoder.encode(request.getPassword()))
+                .typeLogin(UserTypeLogin.APP)
+                .status(UserStatus.ACTIVE)
+                .role(UserRole.CUSTOMER)
                 .build();
-        UserProfile profile = UserProfile.builder().build();
+        User resUser = userRepository.save(user);
+
+        UserProfile profile = profileMapper.toUserProfile(request);
+        profile.setUserId(resUser.getId());
+        UserProfile respProfile = profileRepository.save(profile);
 
         return AuthResponse.builder()
-                .userID(user.getId())
-                .fullname(profile.getFullName())
+                .userID(resUser.getId())
+                .fullname(respProfile.getFullName())
                 .build();
     }
 
@@ -119,7 +134,7 @@ public class AuthService {
         return jwsObject.serialize();
     }
 
-    public String getUserIdFromToken() {
+    public static String getUserIdFromToken() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || auth instanceof AnonymousAuthenticationToken)
