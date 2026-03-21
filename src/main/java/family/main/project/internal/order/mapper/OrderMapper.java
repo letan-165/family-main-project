@@ -1,6 +1,7 @@
 package family.main.project.internal.order.mapper;
 
 import family.main.project.internal.order.dto.request.OrderUpdateInfoRequest;
+import family.main.project.internal.order.dto.response.OrderResponse;
 import family.main.project.internal.order.dto.response.OrderUpdateInfoResponse;
 import family.main.project.internal.order.entity.UserOrder;
 import org.mapstruct.Mapper;
@@ -10,6 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring",nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface OrderMapper {
     OrderUpdateInfoResponse toOrderUpdateInfoResponse(UserOrder userOrder);
+    OrderResponse toOrderResponse(UserOrder userOrder);
 
     void updateOrderFromRequest(@MappingTarget UserOrder userOrder, OrderUpdateInfoRequest request);
 }

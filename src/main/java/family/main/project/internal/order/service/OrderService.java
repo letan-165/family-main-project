@@ -15,7 +15,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class OrderService {
         order = orderRepository.save(order);
 
         int total = 0;
+        List<ItemOrder> itemOrders = new ArrayList<>();
 
         for (OrderItemRequest itemReq : request.getItems()) {
             Item item = itemRepository.findById(itemReq.getItemId())
@@ -54,11 +57,12 @@ public class OrderService {
                     .total(price)
                     .build();
 
-            itemOrderRepository.save(itemOrder);
+            itemOrders.add(itemOrder);
             total += price;
         }
 
         order.setTotal(total);
+        itemOrderRepository.saveAll(itemOrders);
         orderRepository.save(order);
 
         UserOrder userOrder = UserOrder.builder()

@@ -43,6 +43,4 @@ public class ProfileService {
 
         return profileMapper.toProfileResponse(profile);
     }
-
-
 }
