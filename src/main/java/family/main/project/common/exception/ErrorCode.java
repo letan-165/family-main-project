@@ -16,6 +16,8 @@ public enum ErrorCode {
     PROFILE_NO_EXISTS(1004, "User not found", HttpStatus.BAD_REQUEST),
     ITEM_NO_EXISTS(1005, "Item not found", HttpStatus.BAD_REQUEST),
     ORDER_NO_EXISTS(1006, "Order not found", HttpStatus.BAD_REQUEST),
+    CART_NO_EXISTS(1007, "Cart not found", HttpStatus.BAD_REQUEST),
+    ITEM_CART_NO_EXISTS(1008, "Item on cart not found", HttpStatus.BAD_REQUEST),
 
     // ===== AUTH (2001 – 2999) =====
     UNAUTHORIZED(2001, "You don't have permission", HttpStatus.FORBIDDEN),

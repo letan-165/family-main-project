@@ -141,6 +141,7 @@ public class OrderService {
 
            itemResponse.setQuantity(orderItem.getQuantity());
            itemResponse.setPrice(orderItem.getPrice());
+           itemResponse.setObjId(orderItem.getId());
 
            return itemResponse;
         }).toList();

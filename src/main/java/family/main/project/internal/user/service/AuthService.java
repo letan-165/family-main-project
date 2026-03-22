@@ -10,6 +10,8 @@ import family.main.project.common.enums.UserRole;
 import family.main.project.common.enums.UserStatus;
 import family.main.project.common.exception.AppException;
 import family.main.project.common.exception.ErrorCode;
+import family.main.project.internal.cart.entity.UserCart;
+import family.main.project.internal.cart.repository.CartRepository;
 import family.main.project.internal.user.dto.request.LoginRequest;
 import family.main.project.internal.user.dto.request.TokenRequest;
 import family.main.project.internal.user.dto.request.UserSignUpRequest;
@@ -54,6 +56,8 @@ public class AuthService {
 
     UserRepository userRepository;
     ProfileRepository profileRepository;
+    CartRepository cartRepository;
+
     PasswordEncoder passwordEncoder;
 
     UserMapper userMapper;
@@ -75,6 +79,10 @@ public class AuthService {
         UserProfile profile = profileMapper.toUserProfile(request);
         profile.setUserId(resUser.getId());
         UserProfile respProfile = profileRepository.save(profile);
+
+        cartRepository.save(UserCart.builder()
+                .userId(resUser.getId())
+                .build());
 
         return AuthResponse.builder()
                 .userID(resUser.getId())
