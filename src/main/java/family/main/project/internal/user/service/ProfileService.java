@@ -39,7 +39,7 @@ public class ProfileService {
         UserProfile profile = profileRepository.findByUserId(userId)
                 .orElseThrow(()->new AppException(ErrorCode.PROFILE_NO_EXISTS));
 
-        profileMapper.updateToProfile(profile,request);
+        profileMapper.updateToProfile(request, profile);
 
         return profileMapper.toProfileResponse(profile);
     }

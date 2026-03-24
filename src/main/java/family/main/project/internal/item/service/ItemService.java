@@ -44,7 +44,7 @@ public class ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new AppException(ErrorCode.ITEM_NO_EXISTS));
 
-        itemMapper.updateItemFromRequest(item, request);
+        itemMapper.updateRequestToItem(request, item);
 
         return itemRepository.save(item);
     }

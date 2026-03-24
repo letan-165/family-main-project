@@ -1,6 +1,8 @@
 package family.main.project.internal.order.controller;
 
 import family.main.project.common.model.response.ApiResponse;
+import family.main.project.internal.cart.dto.request.CreateCartRequest;
+import family.main.project.internal.order.dto.request.OrderCreateFromCartRequest;
 import family.main.project.internal.order.dto.request.OrderCreateRequest;
 import family.main.project.internal.order.dto.request.OrderUpdateStatusRequest;
 import family.main.project.internal.order.dto.response.OrderDetailResponse;
@@ -28,20 +30,17 @@ public class OrderController {
 
         return ApiResponse.<UserOrder>builder()
                 .message("create order")
-                .result(orderService.createOrder(userId ,request, false))
+                .result(orderService.createFromIndex(userId ,request))
                 .build();
     }
 
-    @PostMapping("/public/cart")
-    ApiResponse<UserOrder> createOrderFromCart(@RequestBody OrderCreateRequest request){
-        String userId = AuthService.getUserIdFromToken();
-
+    @PostMapping("/public/{cartId}/cart")
+    ApiResponse<UserOrder> createOrderFromCart(@PathVariable Long cartId,@RequestBody OrderCreateFromCartRequest request){
         return ApiResponse.<UserOrder>builder()
                 .message("create order from cart")
-                .result(orderService.createOrder(userId ,request, true))
+                .result(orderService.createFromCart(cartId ,request))
                 .build();
     }
-
 
     @PutMapping("/public/{id}/status")
     ApiResponse<OrderUpdateStatusResponse> updateStatus(@PathVariable Long id, @RequestBody OrderUpdateStatusRequest request){

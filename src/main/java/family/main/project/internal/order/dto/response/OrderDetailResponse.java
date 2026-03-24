@@ -1,6 +1,6 @@
 package family.main.project.internal.order.dto.response;
 
-import family.main.project.common.model.response.ItemResponse;
+import family.main.project.common.model.response.ItemObjResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDetailResponse extends OrderResponse {
-    List<ItemResponse> items;
+    List<ItemObjResponse> items;
 }

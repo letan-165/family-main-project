@@ -81,7 +81,7 @@ public class UserOrderService {
         UserOrder userOrder = userOrderRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NO_EXISTS));
 
-        orderMapper.updateOrderFromRequest(userOrder, request);
+        orderMapper.updateRequestToOrder(request, userOrder);
 
         UserOrder update = userOrderRepository.save(userOrder);
 

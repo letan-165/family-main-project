@@ -3,7 +3,7 @@ package family.main.project.internal.order.service;
 import family.main.project.common.enums.OrderStatus;
 import family.main.project.common.exception.AppException;
 import family.main.project.common.exception.ErrorCode;
-import family.main.project.common.model.response.ItemResponse;
+import family.main.project.common.model.response.ItemObjResponse;
 import family.main.project.internal.cart.entity.CartItem;
 import family.main.project.internal.cart.entity.UserCart;
 import family.main.project.internal.cart.repository.CartItemRepository;
@@ -11,11 +11,13 @@ import family.main.project.internal.cart.repository.CartRepository;
 import family.main.project.internal.item.entity.Item;
 import family.main.project.internal.item.mapper.ItemMapper;
 import family.main.project.internal.item.repository.ItemRepository;
+import family.main.project.internal.order.dto.request.OrderCreateFromCartRequest;
 import family.main.project.internal.order.dto.request.OrderCreateRequest;
 import family.main.project.internal.order.dto.request.OrderItemRequest;
 import family.main.project.internal.order.dto.response.OrderDetailResponse;
 import family.main.project.internal.order.dto.response.OrderUpdateStatusResponse;
 import family.main.project.internal.order.entity.*;
+import family.main.project.internal.order.mapper.OrderMapper;
 import family.main.project.internal.order.repository.*;
 import family.main.project.internal.user.repository.UserRepository;
 import lombok.AccessLevel;
@@ -42,12 +44,9 @@ public class OrderService {
     CartRepository cartRepository;
 
     ItemMapper itemMapper;
+    OrderMapper orderMapper;
 
-    @CacheEvict(value = "user-order", key = "#result.userId")
-    @Transactional
-    public UserOrder createOrder(String userId, OrderCreateRequest request, boolean fromCart) {
-        //Request quá dư để chuyển từ cart sang order
-
+    UserOrder createOrder(String userId, OrderCreateRequest request) {
         //Check user
         if (!userRepository.existsById(userId))
             throw new AppException(ErrorCode.USER_NO_EXISTS);
@@ -55,15 +54,6 @@ public class OrderService {
         List<Long> itemIds = request.getItems().stream()
                 .map(OrderItemRequest::getItemId)
                 .toList();
-
-        //FromCart
-        if (fromCart) {
-            UserCart cart = cartRepository.findByUserId(userId)
-                    .orElseThrow(() -> new AppException(ErrorCode.CART_NO_EXISTS));
-            Long cartId = cart.getId();
-            if(cartItemRepository.countByCartIdAndItemIdIn(cartId, itemIds)!=itemIds.size())
-                throw new AppException(ErrorCode.ITEM_CART_NO_EXISTS);
-        }
 
         //Set order
         Order order = Order.builder()
@@ -106,10 +96,6 @@ public class OrderService {
 
         order.setTotal(total);
 
-        //FromCart
-        if (fromCart)
-            cartItemRepository.deleteAllByItemIdIn(itemIds);
-
         //Save item-order
         orderItemRepository.saveAll(orderItems);
 
@@ -126,6 +112,42 @@ public class OrderService {
                 .build();
 
         return userOrderRepository.save(userOrder);
+    }
+
+    @CacheEvict(value = "user-order", key = "#result.userId")
+    @Transactional
+    public UserOrder createFromIndex(String userId, OrderCreateRequest request){
+        return createOrder(userId, request);
+    }
+
+    @CacheEvict(value = "user-order", key = "#result.userId")
+    @Transactional
+    public UserOrder createFromCart(Long cartId, OrderCreateFromCartRequest request){
+        List<Long> cartItemIds = request.getItemCartIds();
+        List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
+
+        UserCart userCart = cartRepository.findById(cartId)
+                .orElseThrow(()-> new AppException(ErrorCode.CART_NO_EXISTS));
+
+        boolean allItemOnCart = cartItems.stream()
+                .allMatch(item -> item.getCartId().equals(cartId));
+
+        if(cartItems.size()!=cartItemIds.size() || !allItemOnCart)
+            throw new AppException(ErrorCode.ITEM_CART_NO_EXISTS);
+
+        String userId = userCart.getUserId();
+        List<OrderItemRequest> orderItemRequests = cartItems.stream()
+                .map(orderMapper::toOrderItemRequest)
+                .toList();
+
+        OrderCreateRequest orderCreateRequest = orderMapper.toOrderCreateRequest(request);
+
+        orderCreateRequest.setItems(orderItemRequests);
+
+        UserOrder userOrder = createOrder(userId, orderCreateRequest);
+
+        cartItemRepository.deleteAllById(cartItemIds);
+        return userOrder;
     }
 
     @CacheEvict(value = "user-order", key = "#result.userId")
@@ -177,26 +199,24 @@ public class OrderService {
         //GetItem
         List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
         Map<Long, OrderItem> orderItemMap = orderItems.stream()
-                .collect(Collectors.toMap(OrderItem::getId, o -> o));
+                .collect(Collectors.toMap(OrderItem::getItemId, o -> o));
 
         List<Item> items = itemRepository.findAllById(orderItemMap.keySet());
 
         //MapItemResponse
-        List<ItemResponse> itemResponses = items.stream().map(item -> {
-           ItemResponse itemResponse = itemMapper.toItemResponse(item);
+        List<ItemObjResponse> itemObjResponses = items.stream().map(item -> {
+           ItemObjResponse itemObjResponse = itemMapper.toItemResponse(item);
            OrderItem orderItem = orderItemMap.get(item.getId());
 
-           itemResponse.setQuantity(orderItem.getQuantity());
-           itemResponse.setPrice(orderItem.getPrice());
-           itemResponse.setObjId(orderItem.getId());
+           orderMapper.updateOrderItemToItemObjResponse(orderItem, itemObjResponse);
 
-           return itemResponse;
+           return itemObjResponse;
         }).toList();
 
         return OrderDetailResponse.builder()
                 .user(userOrder)
                 .order(order)
-                .items(itemResponses)
+                .items(itemObjResponses)
                 .build();
     }
 }

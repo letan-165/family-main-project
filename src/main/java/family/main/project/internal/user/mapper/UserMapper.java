@@ -5,7 +5,7 @@ import family.main.project.internal.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring",nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     User toUser(UserSignUpRequest request);
 }

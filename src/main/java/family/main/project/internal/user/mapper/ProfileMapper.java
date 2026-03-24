@@ -12,5 +12,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface ProfileMapper {
     UserProfile toUserProfile(UserSignUpRequest request);
     ProfileResponse toProfileResponse(UserProfile profile);
-    void updateToProfile(@MappingTarget UserProfile profile, ProfileUpdateRequest request);
+    void updateToProfile(ProfileUpdateRequest request,@MappingTarget UserProfile profile);
 }

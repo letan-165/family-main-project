@@ -1,11 +1,14 @@
 package family.main.project.common.model.response;
 
 import family.main.project.common.enums.ItemType;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class ItemResponse {
+@Builder(toBuilder = true)
+public class ItemObjResponse {
     Long id;
+    Long itemId;
     Long objId;
     String name;
     ItemType type;

@@ -2,7 +2,7 @@ package family.main.project.internal.cart.service;
 
 import family.main.project.common.exception.AppException;
 import family.main.project.common.exception.ErrorCode;
-import family.main.project.common.model.response.ItemResponse;
+import family.main.project.common.model.response.ItemObjResponse;
 import family.main.project.internal.cart.dto.request.CreateCartRequest;
 import family.main.project.internal.cart.dto.request.UpdateQuantityRequest;
 import family.main.project.internal.cart.dto.response.GetAllMyCartResponse;
@@ -14,11 +14,9 @@ import family.main.project.internal.cart.repository.CartRepository;
 import family.main.project.internal.item.entity.Item;
 import family.main.project.internal.item.mapper.ItemMapper;
 import family.main.project.internal.item.repository.ItemRepository;
-import family.main.project.internal.order.dto.request.OrderCreateRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.sql.Update;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -51,20 +49,20 @@ public class CartItemService {
 
         List<Item> items = itemRepository.findAllById(cartItemMap.keySet());
 
-        List<ItemResponse> itemResponses = items.stream().map(item -> {
-            ItemResponse itemResponse = itemMapper.toItemResponse(item);
+        List<ItemObjResponse> itemObjRespons = items.stream().map(item -> {
+            ItemObjResponse itemObjResponse = itemMapper.toItemResponse(item);
             CartItem cartItem = cartItemMap.get(item.getId());
 
-            itemResponse.setQuantity(cartItem.getQuantity());
-            itemResponse.setObjId(cartItem.getId());
+            itemObjResponse.setQuantity(cartItem.getQuantity());
+            itemObjResponse.setObjId(cartItem.getId());
 
-            return itemResponse;
+            return itemObjResponse;
         }).toList();
 
 
         return GetAllMyCartResponse.builder()
                 .cartId(cartId)
-                .items(itemResponses)
+                .items(itemObjRespons)
                 .build();
     }
 
