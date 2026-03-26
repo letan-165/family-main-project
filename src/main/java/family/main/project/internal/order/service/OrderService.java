@@ -1,6 +1,8 @@
 package family.main.project.internal.order.service;
 
+import family.main.project.common.enums.ItemStatus;
 import family.main.project.common.enums.OrderStatus;
+import family.main.project.common.enums.UserStatus;
 import family.main.project.common.exception.AppException;
 import family.main.project.common.exception.ErrorCode;
 import family.main.project.common.model.response.ItemObjResponse;
@@ -19,6 +21,7 @@ import family.main.project.internal.order.dto.response.OrderUpdateStatusResponse
 import family.main.project.internal.order.entity.*;
 import family.main.project.internal.order.mapper.OrderMapper;
 import family.main.project.internal.order.repository.*;
+import family.main.project.internal.user.entity.User;
 import family.main.project.internal.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +51,11 @@ public class OrderService {
 
     UserOrder createOrder(String userId, OrderCreateRequest request) {
         //Check user
-        if (!userRepository.existsById(userId))
-            throw new AppException(ErrorCode.USER_NO_EXISTS);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->new AppException(ErrorCode.USER_NO_EXISTS));
+
+        if (user.getStatus().equals(UserStatus.BANNED))
+            throw new AppException(ErrorCode.USER_NO_ACTIVE);
 
         List<Long> itemIds = request.getItems().stream()
                 .map(OrderItemRequest::getItemId)
@@ -79,6 +85,10 @@ public class OrderService {
             if (item==null)
                     throw new AppException(ErrorCode.ITEM_NO_EXISTS);
 
+            if (!item.getStatus().equals(ItemStatus.ACTIVE))
+                throw new AppException(ErrorCode.ITEM_NO_ACTIVE);
+
+
             int price = item.getPrice();
             item.setSold(item.getSold() + itemReq.getQuantity());
 
@@ -95,6 +105,7 @@ public class OrderService {
         }
 
         order.setTotal(total);
+        orderRepository.save(order);
 
         //Save item-order
         orderItemRepository.saveAll(orderItems);
